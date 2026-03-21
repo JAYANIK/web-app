@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5, user-scalable=yes">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+html,body{
+height:100%;
+overflow-x:hidden;
+background:#f4f6f9;
+-webkit-overflow-scrolling:touch;
+}
+
+/* HEADER */
+
+.headerBar{
+background:#003366;
+color:white;
+padding:12px;
+}
+
+/* LEFT STUDENT */
+
+.leftBox{
+background:#ffdddd;
+color:red;
+font-weight:bold;
+border:2px solid red;
+}
+
+/* STUDENT ROW */
+
+.student-row{
+padding:8px;
+border-bottom:1px solid #ddd;
+}
+.student-row input{
+font-size:16px;
+}
+
+/* MARK AREA */
+
+#marksArea{
+overflow-y:auto;
+-webkit-overflow-scrolling:touch;
+touch-action:pan-y pinch-zoom;
+}
+
+/* LOADER */
+
+#loader{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(255,255,255,0.7);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9999;
+touch-action:none;
+}
+
+.spinner-border{
+width:4rem;
+height:4rem;
+}
+
+/* LOGIN CARD */
+
+.login-card{
+border-radius:15px;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.headerBar h5{
+font-size:14px;
+}
+
+#marksArea{
+max-height:65vh;
+}
+
+}
+
+</style>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbzHTrKU5EpdtDeGv81sZQsNikxVy_yCTytKo1Q5rtUjQBOb3tLXzj6IAC_YK1vwtIc7/exec";
+</script>
+
+</head>
+
+<body>
+
+<!-- LOADER -->
+
+<div id="loader">
+<div class="spinner-border text-primary"></div>
+</div>
+
+<!-- HEADER -->
+
+<div id="headerBar" class="headerBar d-none">
+
+<div class="container-fluid d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+<h5 class="mb-0">પી.એમ.જી. ઠાકર આદર્શ હાઈસ્કૂલ, કડી</h5>
+<div id="teacherInfo"></div>
+</div>
+
+<div class="mt-2 mt-md-0">
+<!-- buttons -->
+<button class="btn btn-warning btn-sm me-2" onclick="openChangePassword()">Change Password</button>
+<button class="btn btn-dark btn-sm me-2" onclick="openPrincipalLogin()">Principal Dashboard</button>
+<button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- LOGIN PAGE -->
+
+<div id="loginPage" class="container mt-5">
+
+<div class="row justify-content-center">
+
+<div class="col-lg-4 col-md-6 col-12">
+
+<div class="card shadow login-card">
+
+<div class="card-body text-center">
+
+<img src="https://1drv.ms/i/c/20e2fadc06266114/IQT2xmZmZ-oLT6g3Das16IkcAR2O2OHuqptdr932horfspo?width=254&height=265" class="img-fluid mb-3"/>
+
+<h4 class="text-primary">PMG Thakar Adarsh HighSchool Kadi</h4>
+
+<h5 class="mt-2">Marks Entry Portal</h5>
+
+<input id="code" class="form-control mt-3" placeholder="શિક્ષક કોડ">
+
+<input id="pass" type="password" class="form-control mt-3" placeholder="પાસવર્ડ">
+
+<button class="btn btn-primary w-100 mt-3" onclick="login()">Login</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MARQUEE -->
+
+<div class="bg-warning text-center fw-bold py-1">
+<marquee behavior="scroll" direction="left">
+📢 માર્કસ એન્ટ્રીની છેલ્લી તારીખ 30 માર્ચ 2026 છે.
+</marquee>
+</div>
+
+<!-- CLASS PAGE -->
+
+<div id="classPage" class="container mt-4 d-none">
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<div class="row g-3">
+
+<div class="col-md-4">
+
+<label class="form-label">ધોરણ</label>
+
+<select id="std" class="form-select" onchange="loadClassList()">
+
+<option value="">ધોરણ પસંદ કરો</option>
+
+</select>
+
+</div>
+
+<div class="col-md-4">
+
+<label class="form-label">વર્ગ</label>
+
+<select id="class" class="form-select" onchange="loadSubjects()">
+
+<option value="">વર્ગ પસંદ કરો</option>
+
+</select>
+
+</div>
+
+<div class="col-md-4">
+
+<label class="form-label">વિષય</label>
+
+<select id="subject" class="form-select" onchange="loadStudents()">
+
+<option value="">વિષય પસંદ કરો</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div id="principalSection" class="container mt-4" style="display:none">
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<h4 class="mb-3">Principal Dashboard</h4>
+
+<table class="table table-bordered">
+
+<thead class="table-dark">
+
+<tr>
+<th>Std</th>
+<th>Class</th>
+<th>Subject</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody id="dashboardTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- STUDENT LIST -->
+
+<div id="marksArea" class="mt-4"></div>
+
+<div class="text-center mt-3">
+
+<button id="saveBtn" class="btn btn-success btn-lg d-none" onclick="saveMarks()">
+Save Marks
+</button>
+
+</div>
+
+</div>
+
+<!-- PASSWORD MODAL -->
+
+<div class="modal fade" id="passModal">
+
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h5 class="modal-title">Change Password</h5>
+
+</div>
+
+<div class="modal-body">
+
+<input id="oldPass" type="password" class="form-control mb-2" placeholder="જૂનો પાસવર્ડ">
+
+<input id="newPass" type="password" class="form-control" placeholder="નવો પાસવર્ડ">
+
+</div>
+
+<div class="modal-footer">
+
+<button class="btn btn-primary" onclick="savePassword()">Save</button>
+
+<button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- LOCKED MODAL -->
+
+<div class="modal fade" id="lockedModal">
+
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content">
+
+<div class="modal-header bg-warning">
+
+<h5 class="modal-title">Subject Locked</h5>
+
+<button class="btn-close" data-bs-dismiss="modal"></button>
+
+</div>
+
+<div class="modal-body text-center">
+
+<h5 class="text-danger">
+
+આ વિષયની માર્કસ એન્ટ્રી પહેલા પૂર્ણ કરેલ છે.
+
+</h5>
+
+<p>
+
+તમે ફક્ત એન્ટ્રી કરેલ માર્કસ જોઈ શકશો. Edit કરી શકાય નહી.
+
+</p>
+
+</div>
+
+<div class="modal-footer">
+
+<button class="btn btn-primary" data-bs-dismiss="modal">
+
+OK
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SUCCESS ENTRY MODAL -->
+
+<div class="modal fade" id="successModal">
+
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content">
+
+<div class="modal-header bg-success text-white">
+
+<h5 class="modal-title">Marks Entry Successful</h5>
+
+</div>
+
+<div class="modal-body text-center">
+
+<h4 class="text-success mb-3">✔ Marks Saved Successfully</h4>
+
+<div class="border rounded p-3 text-start">
+
+<p><b>Teacher :</b> <span id="mTeacher"></span></p>
+
+<p><b>Standard :</b> <span id="mStd"></span></p>
+
+<p><b>Class :</b> <span id="mClass"></span></p>
+
+<p><b>Subject :</b> <span id="mSubject"></span></p>
+
+<p><b>Entry Time :</b> <span id="mTime"></span></p>
+
+</div>
+
+<p class="text-muted mt-2">
+PMG THAKAR ADARSH HIGHSCHOOL KADI @2026
+</p>
+
+</div>
+
+<div class="modal-footer">
+
+<button class="btn btn-primary" data-bs-dismiss="modal">
+OK
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- PRINCIPAL LOGIN MODAL -->
+
+<div class="modal fade" id="principalModal">
+
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content">
+
+<div class="modal-header bg-dark text-white">
+<h5 class="modal-title">Principal Login</h5>
+</div>
+
+<div class="modal-body">
+
+<input type="password" id="principalPass" class="form-control" placeholder="Enter Principal Password">
+
+</div>
+
+<div class="modal-footer">
+
+<button class="btn btn-primary" onclick="openDashboard()">Open Dashboard</button>
+
+<button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+var teacherName="";
+
+function showLoader(){
+document.getElementById("loader").style.display="flex";
+}
+
+function hideLoader(){
+document.getElementById("loader").style.display="none";
+}
+
+/* LOGIN */
+
+function login(){
+
+var code=document.getElementById("code").value;
+var pass=document.getElementById("pass").value;
+
+if(code==""||pass==""){
+alert("Please enter code and password");
+return;
+}
+
+showLoader();
+
+fetch(API+"?action=login&code="+code+"&pass="+pass)
+.then(res=>res.json())
+.then(res=>{
+
+hideLoader();
+
+if(res && res.status===true){
+
+teacherName=res.teacher;
+
+localStorage.setItem("loginTime", Date.now());
+localStorage.setItem("teacher", teacherName);
+
+document.getElementById("loginPage").style.display="none";
+document.getElementById("classPage").classList.remove("d-none");
+document.getElementById("headerBar").classList.remove("d-none");
+
+document.getElementById("teacherInfo").innerHTML=
+"લોગીન થયેલ શિક્ષક : "+teacherName;
+
+loadStd();
+
+}else{
+alert("Wrong Login");
+}
+
+});
+}
+
+/* STD */
+
+function loadStd(){
+
+fetch(API+"?action=getStd")
+.then(res=>res.json())
+.then(data=>{
+
+var std=document.getElementById("std");
+
+std.innerHTML='<option value="">ધોરણ પસંદ કરો</option>';
+
+data.forEach(function(s){
+
+var op=document.createElement("option");
+op.value=s;
+op.text=s;
+
+std.appendChild(op);
+
+});
+
+});
+
+}
+
+/* CLASS */
+
+function loadClassList(){
+
+var std=document.getElementById("std").value;
+
+if(std=="")return;
+
+showLoader();
+
+fetch(API+"?action=getClass&std="+std)
+.then(res=>res.json())
+.then(data=>{
+
+hideLoader();
+
+var cls=document.getElementById("class");
+
+cls.innerHTML='<option value="">વર્ગ પસંદ કરો</option>';
+
+data.forEach(function(c){
+
+var op=document.createElement("option");
+op.value=std+c.name;
+op.text=c.name;
+
+cls.appendChild(op);
+
+});
+
+});
+
+}
+
+/* SUBJECT */
+
+function loadSubjects(){
+
+var sheet=document.getElementById("class").value;
+
+if(sheet=="")return;
+
+showLoader();
+
+fetch(API+"?action=getSubjects&sheet="+sheet)
+.then(res=>res.json())
+.then(data=>{
+
+hideLoader();
+
+var sub=document.getElementById("subject");
+
+sub.innerHTML='<option value="">વિષય પસંદ કરો</option>';
+
+data.forEach(function(subject){
+
+var op=document.createElement("option");
+
+op.value=subject.name;
+op.text=subject.done ? subject.name+" ✓" : subject.name;
+
+sub.appendChild(op);
+
+});
+
+});
+
+}
+
+/* STUDENTS */
+
+function loadStudents(){
+
+var sheet=document.getElementById("class").value;
+var subject=document.getElementById("subject").value;
+
+if(subject=="")return;
+
+var subjectText=document.getElementById("subject").selectedOptions[0].text;
+
+var locked=subjectText.includes("✓");
+
+if(locked){
+new bootstrap.Modal(document.getElementById('lockedModal')).show();
+}
+
+showLoader();
+
+fetch(API+"?action=getStudents&sheet="+sheet)
+.then(res=>res.json())
+.then(data=>{
+
+hideLoader();
+
+var subjectIndex=0;
+
+for(var i=0;i<data[0].length;i++){
+if(data[0][i]==subject){
+subjectIndex=i;
+}
+}
+
+var html='<div class="card"><div class="card-body">';
+
+for(var i=1;i<data.length;i++){
+
+var roll=data[i][0];
+var name=data[i][1];
+var status=data[i][2];
+var marks=data[i][subjectIndex];
+
+if(!roll)continue;
+
+if(status=="Left"){
+
+html+=`
+<div class="row student-row">
+<div class="col-2 fw-bold">${roll}</div>
+<div class="col-4">${name}</div>
+<div class="col-6">
+<input class="form-control leftBox" value="LEFT STUDENT" disabled>
+</div>
+</div>`;
+
+}else{
+
+html+=`
+<div class="row student-row">
+<div class="col-2 fw-bold">${roll}</div>
+<div class="col-4">${name}</div>
+<div class="col-6">
+<input type="number" class="form-control markInput" value="${marks||""}" data-roll="${roll}" min="0" max="100" inputmode="numeric" ${locked?"disabled":""}>
+</div>
+</div>`;
+
+}
+
+}
+
+html+='</div></div>';
+
+document.getElementById("marksArea").innerHTML=html;
+
+document.getElementById("saveBtn").classList.toggle("d-none", locked);
+
+});
+
+}
+
+/* SAVE */
+
+function saveMarks(){
+
+var inputs=document.querySelectorAll("#marksArea input");
+
+for(var i=0;i<inputs.length;i++){
+
+if(!inputs[i].disabled){
+
+var val=inputs[i].value;
+
+if(val==""||val<0||val>100){
+alert("માર્કસ 0 થી 100 વચ્ચે જ હોવા જોઈએ.");
+inputs[i].focus();
+return;
+}
+
+}
+
+}
+
+showLoader();
+
+var sheet=document.getElementById("class").value;
+var subject=document.getElementById("subject").value;
+
+var data=[];
+
+inputs.forEach(function(input){
+data.push({
+roll:Number(input.dataset?.roll||0),
+marks:input.value
+});
+});
+
+fetch(API,{
+method:"POST",
+body:JSON.stringify({
+action:"saveMarks",
+sheet:sheet,
+subject:subject,
+data:data,
+teacher:teacherName
+})
+}).then(()=>{
+
+hideLoader();
+alert("Marks Saved");
+
+document.getElementById("marksArea").innerHTML="";
+document.getElementById("saveBtn").classList.add("d-none");
+
+loadSubjects();
+
+});
+
+}
+
+/* PASSWORD */
+
+function savePassword(){
+
+var oldPass=document.getElementById("oldPass").value;
+var newPass=document.getElementById("newPass").value;
+var code=document.getElementById("code").value;
+
+fetch(API,{
+method:"POST",
+body:JSON.stringify({
+action:"changePassword",
+code:code,
+oldPass:oldPass,
+newPass:newPass
+})
+})
+.then(res=>res.json())
+.then(res=>{
+
+if(res=="success"){
+alert("પાસવર્ડ સફળતાપૂર્વક બદલાઈ ગયો છે.");
+bootstrap.Modal.getInstance(document.getElementById('passModal')).hide();
+}else{
+alert("પાસવર્ડ નાખવામાં ભૂલ છે.");
+}
+
+});
+
+}
+
+/* AUTO LOGIN 30 SEC */
+
+window.onload=function(){
+
+var t=localStorage.getItem("loginTime");
+var name=localStorage.getItem("teacher");
+
+if(t && name && (Date.now()-t)<30000){
+
+teacherName=name;
+
+document.getElementById("loginPage").style.display="none";
+document.getElementById("classPage").classList.remove("d-none");
+document.getElementById("headerBar").classList.remove("d-none");
+
+document.getElementById("teacherInfo").innerHTML=
+"લોગીન થયેલ શિક્ષક : "+teacherName;
+
+loadStd();
+
+}
+
+}
+
+/* LOGOUT */
+
+function logout(){
+localStorage.clear();
+location.reload();
+}
+
+
+function openPrincipalLogin(){
+console.log("clicked"); // test
+
+var modal = new bootstrap.Modal(document.getElementById('principalModal'));
+modal.show();
+}
+
+function openDashboard(){
+
+var pass=document.getElementById("principalPass").value;
+
+if(pass!="1960"){
+alert("Wrong Password");
+return;
+}
+
+bootstrap.Modal.getInstance(document.getElementById('principalModal')).hide();
+
+document.getElementById("principalSection").style.display="block";
+
+loadDashboard();
+}
+
+
+function loadDashboard(){
+
+fetch(API+"?action=dashboard")
+.then(res=>res.json())
+.then(data=>{
+
+var html="";
+
+if(!data || data.length===0){
+html = "<tr><td colspan='4' class='text-danger text-center'>No Data Found</td></tr>";
+}else{
+data.forEach(d=>{
+html+=`
+<tr>
+<td>${d.std}</td>
+<td>-</td>
+<td>${d.subject}</td>
+<td style="font-weight:bold;color:${d.status=='Done'?'green':'red'}">
+${d.status}
+</td>
+</tr>`;
+});
+}
+
+document.getElementById("dashboardTable").innerHTML=html;
+
+});
+}
+
+function openChangePassword(){
+
+var modal = new bootstrap.Modal(document.getElementById('passModal'));
+modal.show();
+
+}
+</script>
+
+</body>
+</html>
