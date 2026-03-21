@@ -50,8 +50,14 @@ overflow-y:auto;
 touch-action:pan-y pinch-zoom;
 }
 
+
+#principalSection{
+transition:0.3s;
+}
+  
 /* LOADER */
 
+  
 #loader{
 position:fixed;
 top:0;
@@ -595,6 +601,7 @@ sub.appendChild(op);
 
 function loadStudents(){
 
+document.getElementById("principalSection").style.display="none";
 var sheet=document.getElementById("class").value;
 var subject=document.getElementById("subject").value;
 
@@ -809,16 +816,23 @@ alert("Wrong Password");
 return;
 }
 
+// modal close
 bootstrap.Modal.getInstance(document.getElementById('principalModal')).hide();
 
+// ✅ dashboard show
 document.getElementById("principalSection").style.display="block";
+
+// ❌ students hide
+document.getElementById("marksArea").innerHTML="";
+document.getElementById("saveBtn").classList.add("d-none");
 
 loadDashboard();
 }
 
-
 function loadDashboard(){
 
+
+  
 fetch(API+"?action=dashboard")
 .then(res=>res.json())
 .then(data=>{
