@@ -660,7 +660,7 @@ html+=`
 <div class="col-2 fw-bold">${roll}</div>
 <div class="col-4">${name}</div>
 <div class="col-6">
-<input type="number" class="form-control markInput" value="${marks||""}" data-roll="${roll}" min="0" max="100" inputmode="numeric" ${locked?"disabled":""}>
+<input type="number" class="form-control markInput" value="${marks ?? ""}" data-roll="${roll}" min="0" max="100" inputmode="numeric" ${locked?"disabled":""}>
 </div>
 </div>`;
 
