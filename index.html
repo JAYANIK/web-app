@@ -16,7 +16,14 @@ overflow-x:hidden;
 background:#f4f6f9;
 -webkit-overflow-scrolling:touch;
 }
+/* SPINNERTEXT */
+.loading-text {
+    animation: blink 1s infinite;
+}
 
+@keyframes blink {
+    50% { opacity: 0.5; }
+}
 /* HEADER */
   
 .headerBar{
@@ -113,6 +120,9 @@ const API = "https://script.google.com/macros/s/AKfycbzHTrKU5EpdtDeGv81sZQsNikxV
 
 <div id="loader">
 <div class="spinner-border text-primary"></div>
+<div class="mt-2 text-secondary loading-text">
+    ⏳ કૃપા કરીને રાહ જુઓ...
+</div>
 </div>
 
 <!-- HEADER -->
