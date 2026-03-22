@@ -172,12 +172,32 @@ const API = "https://script.google.com/macros/s/AKfycbzHTrKU5EpdtDeGv81sZQsNikxV
 
 <!-- MARQUEE -->
 
-<div class="bg-warning text-center fw-bold py-1">
-<marquee behavior="scroll" direction="left">
-📢 માર્કસ એન્ટ્રીની છેલ્લી તારીખ 30 માર્ચ 2026 છે.
-</marquee>
+<div class="marquee-container">
+  <div class="marquee-text">
+    🔥 Important Notice: Sabhi teachers apni entry time par karein!
+  </div>
 </div>
 
+<style>
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: marquee 10s linear infinite;
+  font-weight: bold;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+</style>
 <!-- CLASS PAGE -->
 
 <div id="classPage" class="container mt-4 d-none">
