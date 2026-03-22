@@ -726,8 +726,21 @@ teacher:teacherName
 }).then(()=>{
 
 hideLoader();
-alert("Marks Saved");
+// current time
+var now = new Date();
+var timeString = now.toLocaleString();
 
+// modal me data set karo
+document.getElementById("mTeacher").innerText = teacherName;
+document.getElementById("mStd").innerText = document.getElementById("std").value;
+document.getElementById("mClass").innerText = document.getElementById("class").value;
+document.getElementById("mSubject").innerText = document.getElementById("subject").value;
+document.getElementById("mTime").innerText = timeString;
+
+// modal show karo
+new bootstrap.Modal(document.getElementById('successModal')).show();
+
+// data reset
 document.getElementById("marksArea").innerHTML="";
 document.getElementById("saveBtn").classList.add("d-none");
 
